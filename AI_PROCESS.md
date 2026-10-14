@@ -72,10 +72,11 @@ The user provided the complete coding challenge PDF and requested:
 **Key Design Decisions:**
 
 - **Category-based preferences**: Simplified from per-event to two categories (game/social)
-- **Default enabled**: If no preferences set, all notifications are enabled
+- **Default enabled with merge**: Missing preference categories default to enabled (fixed: partial preferences now merge with defaults)
 - **Dependency injection**: Services receive client via constructor for testability
 - **Clear message format**: Following examples from the challenge document
 - **Proper notification routing**: Friend requests notify receiver, acceptances notify requester, followers notify the followed person
+- **Direct method calls**: Simple event triggering (not Observer pattern) - suitable for this use case
 
 ### Step 2: Create main.test.js
 
@@ -97,10 +98,11 @@ The user provided the complete coding challenge PDF and requested:
 
 **Test Coverage:**
 
-- ✅ 16 test cases total
+- ✅ 17 test cases total (added test for partial preferences)
 - ✅ All six event types covered
 - ✅ Preference filtering (enabled/disabled)
 - ✅ Default preferences
+- ✅ Partial preferences (only some categories set)
 - ✅ Category detection
 - ✅ Correct recipient identification
 - ✅ Multiple user scenarios
@@ -138,7 +140,7 @@ The user provided the complete coding challenge PDF and requested:
    - ✅ No errors detected
 
 2. **Test Suite** (`npm test`)
-   - ✅ All 16 tests passed
+   - ✅ All 17 tests passed
    - ✅ 5 test suites completed successfully
    - ✅ Duration: ~50ms
 
@@ -250,14 +252,25 @@ Documented clearly in tests with assertions.
 
 ### Challenge 2: Preference Defaults
 
-**Problem:** What happens when a user has no preferences set?
+**Problem:** What happens when a user sets only some preferences (e.g., `{ social: false }`)? Should game notifications work?
 
 **Solution:**
-- Return default object `{ game: true, social: true }`
-- Assumption: Users want notifications by default
+- Merge partial preferences with defaults using spread operator
+- `{ ...defaults, ...userPrefs }` ensures missing categories default to enabled
+- Example: `{ social: false }` becomes `{ game: true, social: false }`
 - Documented in README and tests
 
-### Challenge 3: Category Mapping
+### Challenge 3: Architecture Description Accuracy
+
+**Problem:** Initially described the system as using "Observer Pattern" but it actually uses direct method calls, not a true pub-sub system.
+
+**Solution:**
+- Updated README to accurately describe it as "Direct Event Triggering"
+- Noted that it could be refactored to true Observer/Pub-Sub for production
+- Clarified that InAppNotificationClient is a console mock, not production delivery
+- Honesty about architecture is important for interviews
+
+### Challenge 4: Category Mapping
 
 **Problem:** How to map notification types to preference categories?
 
@@ -267,7 +280,7 @@ Documented clearly in tests with assertions.
 - Everything else is social
 - Easy to maintain as new types are added
 
-### Challenge 4: Testability
+### Challenge 5: Testability
 
 **Problem:** Console.log can't be tested easily
 
@@ -333,18 +346,20 @@ This implementation successfully meets all challenge requirements:
 
 - ✅ Compiles and runs without errors
 - ✅ All six event types implemented
-- ✅ User preferences with defaults
+- ✅ User preferences with defaults (including partial preference handling)
 - ✅ Clean, maintainable code
-- ✅ Comprehensive tests (16 passing)
+- ✅ Comprehensive tests (17 passing)
 - ✅ Clear documentation
+- ✅ Accurate architecture descriptions
 - ✅ Interview-ready with discussion points
 
 The code demonstrates understanding of:
 - Object-oriented design
-- Event-driven architecture
+- Direct event triggering architecture
 - Dependency injection
 - Testing strategies
 - Production considerations
 - Trade-off analysis
+- Honest technical communication
 
 Ready for GitHub upload and interview discussion.

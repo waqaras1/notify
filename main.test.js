@@ -106,6 +106,19 @@ describe('NotificationService', () => {
     assert.strictEqual(service.getCategory('friend_accepted'), 'social');
     assert.strictEqual(service.getCategory('new_follower'), 'social');
   });
+
+  test('should default missing categories to enabled (partial preferences)', () => {
+    service.setUserPreferences(1, { social: false });
+    
+    const gameNotification = new Notification(1, 'level_up', 'Level up!');
+    const socialNotification = new Notification(1, 'friend_request', 'Friend request!');
+    
+    service.send(gameNotification);
+    service.send(socialNotification);
+
+    assert.strictEqual(mockClient.getDelivered().length, 1);
+    assert.strictEqual(mockClient.getDelivered()[0].type, 'level_up', 'Game notification should be sent when only social is disabled');
+  });
 });
 
 describe('GameEngine Events', () => {

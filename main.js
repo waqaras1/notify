@@ -42,7 +42,11 @@ class NotificationService {
    */
   getUserPreferences(userId) {
     const defaults = { game: true, social: true };
-    return this.userPreferences.get(userId) || defaults;
+    const userPrefs = this.userPreferences.get(userId);
+    
+    // Merge with defaults to handle partial preferences
+    if (!userPrefs) return defaults;
+    return { ...defaults, ...userPrefs };
   }
 
   /**

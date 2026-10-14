@@ -27,7 +27,10 @@ Users can enable or disable notifications by category:
 - **Game Events** - All in-game notifications (level up, items, challenges, PvP)
 - **Social Events** - All social notifications (friend requests, follows)
 
-**Default Behavior:** If a user has no preferences set, all notifications are enabled by default.
+**Default Behavior:** 
+- If a user has no preferences set, all notifications are enabled by default
+- If a user sets partial preferences (e.g., only `{ social: false }`), missing categories default to enabled
+- Example: Setting `{ social: false }` results in `{ game: true, social: false }`
 
 ## Setup
 
@@ -92,8 +95,8 @@ The central coordinator that:
 - Delegates delivery to the notification client
 
 #### 3. **NotificationClient Interface**
-Pluggable delivery mechanism:
-- `InAppNotificationClient` - Console logging for demo/production
+Pluggable delivery mechanism (mock for this demo):
+- `InAppNotificationClient` - Console logging mock simulating in-app delivery
 - `MockNotificationClient` - Records notifications for testing
 
 #### 4. **Event Sources**
@@ -102,15 +105,16 @@ Pluggable delivery mechanism:
 
 ### Design Patterns
 
-**Observer Pattern (Event-Driven)**
-- Game and social systems emit events
-- NotificationService observes and processes them
-- Decouples event sources from notification logic
+**Direct Event Triggering**
+- Game and social systems trigger notifications through direct method calls
+- NotificationService processes events and applies business logic
+- Simple and straightforward for this use case
+- Note: Not a true Observer/Pub-Sub pattern (no event subscriptions), but could be refactored to one for production
 
 **Strategy Pattern (Delivery)**
 - NotificationClient interface allows swapping delivery mechanisms
-- Console logging for demo, mock recording for tests
-- Easy to add email, push, SMS, or WebSocket delivery
+- Console logging mock for demo/testing
+- Easy to add email, push, SMS, or WebSocket delivery in production
 
 **Dependency Injection**
 - Services receive their dependencies via constructor
