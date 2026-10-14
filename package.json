@@ -1,0 +1,22 @@
+{
+  "name": "gaming-notification-system",
+  "version": "1.0.0",
+  "description": "Real-time notification system for gaming platform - Globalli coding challenge",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node --test main.test.js",
+    "build": "node --check main.js && node --check main.test.js"
+  },
+  "keywords": [
+    "notification",
+    "gaming",
+    "real-time",
+    "event-driven"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
